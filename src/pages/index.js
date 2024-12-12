@@ -68,14 +68,6 @@ const HomePage = () => {
           {/* <ResumeCardList /> */}
         </div>
       </div>
-
-      <ChatBot />
-      {/* {showLogin && (
-        <EmailLoginModal
-          walletAddress={address}
-          handleClose={() => setShowLogin(false)}
-        />
-      )} */}
     </Layout>
   );
 };

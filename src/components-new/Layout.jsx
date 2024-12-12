@@ -1,10 +1,12 @@
-import Navbar from './Navbar';
-import Sidebar from './Sidebar';
+import ChatbotLayout from "@/components/ChatbotLayout";
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
 
-const Layout = ({children}) => {
+const Layout = ({ children }) => {
   return (
     <div className="relative">
-      <div className="
+      <div
+        className="
         fixed
         left-0
         bottom-0
@@ -17,16 +19,18 @@ const Layout = ({children}) => {
         overflow-auto
         !z-0
         opacity-40
-      "></div>
-      <Sidebar/>
+      "
+      ></div>
+      <Sidebar />
       <main className="relative w-[calc(100%_-_213px)] ml-[213px] z-20">
         <Navbar />
         <div className="px-[20px] md:pl-[100px] md:pr-[29px]">
           {children}
+          <ChatbotLayout />
         </div>
       </main>
     </div>
   );
-}
+};
 
 export default Layout;
