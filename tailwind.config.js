@@ -13,27 +13,28 @@ module.exports = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      fontWeight: {
+        thin: "100",
+      },
     },
     fontFamily: {
-      'inter': ['inter', 'sans-serif']
+      inter: ["inter", "sans-serif"],
     },
     backgroundImage: {
       // 'image-content': "url('/bg-main.webp')"
       // 'image-content': "url('/bg-main.svg')"
-      'image-content': "url('/bg-main.gif')"
+      "image-content": "url('/bg-main.gif')",
       // 'image-content': "url('/bg-main.mp4')"
     },
     keyframes: {
       move: {
-        '0%, 100%': { transform: 'translateX(0)' },
-        '50%': { transform: 'translateX(30px)' },
+        "0%, 100%": { transform: "translateX(0)" },
+        "50%": { transform: "translateX(30px)" },
       },
     },
     animation: {
-      'move-left-right': 'move 3s ease-in-out infinite',
+      "move-left-right": "move 3s ease-in-out infinite",
     },
   },
-  plugins: [
-    require('@tailwindcss/aspect-ratio'),
-  ],
+  plugins: [require("@tailwindcss/aspect-ratio")],
 };

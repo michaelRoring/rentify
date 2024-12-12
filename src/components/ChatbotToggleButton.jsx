@@ -2,7 +2,7 @@ export default function ChatbotToggleButton({ onClick, isOpen }) {
   return (
     <button
       onClick={onClick}
-      className="fixed bottom-4 left-4 z-50 bg-emerald-500 text-white p-3 rounded-full shadow-lg hover:bg-emerald-600 transition-all duration-300 ease-in-out"
+      className="fixed bottom-4 left-5 z-50 bg-teal-500 text-white p-3 rounded-full shadow-lg hover:bg-teal-700 transition-all duration-300 ease-in-out"
       aria-label={isOpen ? "Close Chatbot" : "Open Chatbot"}
       alt="chat"
     >
