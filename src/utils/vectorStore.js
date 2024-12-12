@@ -28,13 +28,13 @@ export async function initVectorStore() {
 
     vectorStore = await Chroma.fromDocuments(splitDocs, embeddings, {
       collectionName: "knowledge_base",
-      url: process.env.CHROMA_URL || "http://localhost:8000", // Add this line
-      createCollection: true, // Force collection creation
+      // url: process.env.CHROMA_URL || "http://localhost:8000",
+      url: "http://localhost:8000",
+      createCollection: true,
     });
-
-    return vectorStore;
   } catch (error) {
     console.error("Error initializing vector store:", error);
     throw error;
   }
+  return vectorStore;
 }

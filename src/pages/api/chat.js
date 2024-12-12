@@ -14,6 +14,7 @@ async function initChain() {
   if (chain) return chain;
 
   const vectorStore = await initVectorStore();
+
   chain = RetrievalQAChain.fromLLM(llm, vectorStore.asRetriever());
   return chain;
 }
