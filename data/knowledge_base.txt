@@ -1,0 +1,2 @@
+I am Michael Roring, a software engineer with a passion for building innovative and user-friendly applications. I have a strong background in JavaScript, Python, and Java, and I am proficient in various programming languages. I have experience working with React, Node.js, and MongoDB, and I am familiar with popular frameworks such as Next.js, Express.js, and Nest.js. I also have experience with various web development tools and technologies, including HTML, CSS, and Git.
+

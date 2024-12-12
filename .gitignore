@@ -1,0 +1,13 @@
+.env
+node_modules/
+
+# Ignore built files
+
+# Ignore all logfiles and tempfiles.
+/logs
+*.log
+*.tmp
+
+# Ignore pidfiles, but keep the directory.
+pids
+!/pids/.gitkeep
