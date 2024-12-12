@@ -1,14 +1,24 @@
-.env
-# node_modules/
+# Dependencies
 /node_modules
+/.pnp
+.pnp.js
 
-# Ignore built filess
+# Next.js
+/.next
+/out
+build
 
-# Ignore all logfiles and tempfiles.
-/logs
-*.log
-*.tmp
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Ignore pidfiles, but keep the directory.
-pids
-!/pids/.gitkeep
+# Editor directories and files
+.idea
+.vscode
+*.swp
+
+# System files
+.DS_Store
+Thumbs.db
