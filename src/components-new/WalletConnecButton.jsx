@@ -36,9 +36,7 @@ const WalletConnecButton = () => {
   const { disconnect } = useDisconnect();
   const wallet = useActiveWallet();
   const account = useActiveAccount();
-  console.log("account :", account);
-  // const address = account?.address;
-  const address = "asfasfaf";
+  const address = account?.address;
 
   const handleDisconnect = async () => {
     try {

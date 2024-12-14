@@ -11,6 +11,7 @@ export default function Layout({ children }) {
 
   return (
     <div className="relative">
+      <h1>Hello</h1>
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="relative lg:ml-[250px]">
         <Navbar toggleSidebar={toggleSidebar} />

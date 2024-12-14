@@ -18,10 +18,6 @@ import { useEffect, useState } from "react";
 import ImageMap from "../../public/image-map.png";
 import { useActiveAccount, useWalletBalance } from "thirdweb/react";
 
-import { createThirdwebClient } from "thirdweb";
-import { ThirdwebProvider, ConnectButton } from "thirdweb/react";
-import ChatBot from "@/components/Chatbot";
-
 const HomePage = () => {
   // const address = useAddress();
   const account = useActiveAccount();
@@ -30,7 +26,7 @@ const HomePage = () => {
   const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
-    console.log("user :", user);
+    // console.log("user :", user);
     if (!address) return;
 
     if (!user) {

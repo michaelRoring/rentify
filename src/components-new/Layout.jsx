@@ -5,6 +5,7 @@ import Sidebar from "./Sidebar";
 const Layout = ({ children }) => {
   return (
     <div className="relative">
+      <h1>Hello</h1>
       <div
         className="
         fixed
@@ -24,10 +25,7 @@ const Layout = ({ children }) => {
       <Sidebar />
       <main className="relative w-[calc(100%_-_213px)] ml-[213px] z-20">
         <Navbar />
-        <div className="px-[20px] md:pl-[100px] md:pr-[29px]">
-          {children}
-          <ChatbotLayout />
-        </div>
+        <div className="px-[20px] md:pl-[100px] md:pr-[29px]">{children}</div>
       </main>
     </div>
   );

@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useRef, useEffect } from "react";
 import { useChat } from "@/context/ChatContext";
 import getTimestamp from "@/utils/getTimestamp";
@@ -58,7 +59,7 @@ export default function ChatBot() {
   };
 
   return (
-    <div className="max-w-sm mx-auto p-4 ">
+    <div className="max-w mx-auto p-4  ">
       <div className="bg-white rounded-lg shadow-lg p-6 transition-opacity duration-300 ease-in-out">
         <div
           className="h-96 overflow-y-auto mb-4 space-y-1.5"
