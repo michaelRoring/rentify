@@ -17,6 +17,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import ImageMap from "../../public/image-map.png";
 import { useActiveAccount, useWalletBalance } from "thirdweb/react";
+// import { useActiveAccount, useWalletBalance } from "@thirdweb-dev/react";
 
 const HomePage = () => {
   // const address = useAddress();

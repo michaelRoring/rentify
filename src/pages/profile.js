@@ -21,6 +21,8 @@ const ProfilePage = () => {
 
   useEffect(() => {
     // if(!address || !user) return
+    console.log("user :", user);
+    console.log("address :", address);
     if (!user && address) {
       setShowLogin(true);
       return;

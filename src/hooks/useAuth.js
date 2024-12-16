@@ -1,7 +1,7 @@
 // hooks/useAuth.js
-import { useState, useEffect, useContext, createContext } from 'react';
-import firebase from '@/utils/firebaseConfig';
-import { useRouter } from 'next/router';
+import { useState, useEffect, useContext, createContext } from "react";
+import firebase from "@/utils/firebaseConfig";
+import { useRouter } from "next/router";
 
 const authContext = createContext();
 
@@ -26,28 +26,32 @@ function useProvideAuth() {
       // console.log("result.user", result.user);
       router.push(window.location.href);
     } catch (error) {
-      console.error('Error signing in with Google:', error);
+      console.error("Error signing in with Google:", error);
     }
   };
 
   const signUpWithEmail = async (email, password) => {
     try {
-      const result = await firebase.auth().createUserWithEmailAndPassword(email, password);
+      const result = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password);
       setUser(result.user);
       router.push(window.location.href); // Redirect to dashboard or any protected page
     } catch (error) {
-      console.error('Error signing up with email and password:', error);
+      console.error("Error signing up with email and password:", error);
       throw new Error(error.message);
     }
   };
 
   const signInWithEmail = async (email, password) => {
     try {
-      const result = await firebase.auth().signInWithEmailAndPassword(email, password);
+      const result = await firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password);
       setUser(result.user);
       router.push(window.location.href); // Redirect to dashboard or any protected page
     } catch (error) {
-      console.error('Error signing in with email and password:', error);
+      console.error("Error signing in with email and password:", error);
       throw new Error(error.message);
     }
   };
@@ -57,7 +61,7 @@ function useProvideAuth() {
       await firebase.auth().signOut();
       setUser(null);
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error("Error signing out:", error);
     }
   };
 
