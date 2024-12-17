@@ -2,13 +2,10 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import userGlassImage from "../../public/user-glass-image.svg";
 import { WalletConnecButton } from ".";
-import { useAddress } from "@thirdweb-dev/react";
-import firebase from "@/utils/firebaseConfig";
 import { useAuth } from "@/hooks/useAuth";
 import { useActiveAccount } from "thirdweb/react";
 
 const CardGreetings = (props) => {
-  // const address = useAddress()
   const account = useActiveAccount();
   const address = account?.address;
   const { user } = useAuth();
@@ -16,17 +13,9 @@ const CardGreetings = (props) => {
 
   useEffect(() => {
     if (!address || !user) return;
-    try {
-      const usersRef = firebase.database().ref(`users/${address}`);
-      usersRef.once("value", (snapshot) => {
-        const usersData = snapshot.val();
-        console.log("usersData", usersData);
-        setCurrentUser(usersData);
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }, [address, user]);
+
+    setCurrentUser(user);
+  }, [address]);
 
   return (
     <div
@@ -47,7 +36,7 @@ const CardGreetings = (props) => {
         {currentUser ? (
           <div className="w-[60px] h-[60px] md:w-[100px] md:h-[100px] rounded-full shadow overflow-hidden bg-white/20">
             <Image
-              src={currentUser.avatar}
+              src={currentUser.avatar_url}
               alt="user-image"
               width={100}
               height={100}

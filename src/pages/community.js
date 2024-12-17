@@ -9,22 +9,36 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useAddress } from "@thirdweb-dev/react";
 import { useEffect, useState } from "react";
-import { useActiveAccount } from "thirdweb/react";
+import {
+  useActiveAccount,
+  useDisconnect,
+  useActiveWallet,
+} from "thirdweb/react";
 
 const CommunityPage = () => {
-  // const address = useAddress();
   const account = useActiveAccount();
   const address = account?.address;
   const { user, signout } = useAuth();
   const [showLogin, setShowLogin] = useState(false);
+  const { disconnect } = useDisconnect();
+  const wallet = useActiveWallet();
+
+  const handleDisconnect = async () => {
+    try {
+      if (wallet) {
+        await disconnect(wallet);
+        await signout(); // Call the signout function from useAuth
+      }
+    } catch (error) {
+      console.error("Error disconnecting:", error);
+    }
+  };
 
   useEffect(() => {
     // if(!address || !user) return
     if (!user && address) {
-      setShowLogin(true);
       return;
     }
-    setShowLogin(false);
   }, [address, user]);
 
   return (
@@ -32,7 +46,7 @@ const CommunityPage = () => {
       <TextTitleWithStatus text="Community Chat" />
       <div className="md:pt-[54px] mb-[40px] md:mb-[78px]">
         <ChatContainer />
-        {/* <Button onClick={signout}>Sign Out</Button> */}
+        {wallet ? <Button onClick={handleDisconnect}>Sign Out</Button> : null}
       </div>
       {showLogin && (
         <EmailLoginModal

@@ -16,6 +16,7 @@ import firebase from "@/utils/firebaseConfig";
 import moment from "moment";
 import { addressShort } from "@/utils/addressShort";
 import { useActiveAccount } from "thirdweb/react";
+import { useAuth } from "@/hooks/useAuth";
 
 const chatDataList = [
   {
@@ -85,14 +86,14 @@ const ChatSection = ({ data, address, handleShowDetail }) => {
 const ChatList = ({ data, address, handleShowDetail }) => {
   return (
     <ul className="flex flex-col gap-[6px]">
-      {data?.map((user, index) => (
+      {/* {data?.map((user, index) => (
         <ChatItem
           key={index}
           currentUser={user.address == address}
           handleShowDetail={handleShowDetail}
           {...user}
         />
-      ))}
+      ))} */}
     </ul>
   );
 };
@@ -128,7 +129,7 @@ const ChatItem = (props) => {
         <div>
           <div className="flex justify-start items-center gap-[10px]">
             <div>
-              {!props.currentUser ? addressShort(props.address) : "You"}
+              {/* {!props.currentUser ? addressShort(props.address) : "You" */}
             </div>
             <div className="w-[3px] h-[3px] rounded-full bg-[#ffffff50]"></div>
             <div className="px-[6px] py-[2px] text-[12px] font-inter rounded-full bg-[#01FF6120] text-[#01FF61]">
@@ -289,6 +290,7 @@ const ChatMessage = ({ currentUser, sender, avatar, text, timestamp }) => {
 };
 
 const ChatGroupDetails = (props) => {
+  console.log("props :", props);
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -405,30 +407,33 @@ const UserDetails = ({ data, ...props }) => {
 };
 
 const ChatContainer = (props) => {
-  // const address = useAddress()
   const account = useActiveAccount();
   const address = account?.address;
+  const { user, signout } = useAuth();
   const [currentUser, setCurrentUser] = useState(null);
   // const [recipient, setRecipient] = useState(null); // Menambahkan state untuk recipient
   const [users, setUsers] = useState([]);
   const [showDetails, setShowDetails] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
-    const usersRef = firebase.database().ref("users");
-    usersRef.on("value", (snapshot) => {
-      const usersData = snapshot.val();
-      const userList = [];
-      for (let address in usersData) {
-        userList.push({ address, ...usersData[address] });
-      }
+    setToken(localStorage.getItem("token"));
+    const userList = [];
+    const getUsersData = async () => {
+      const response = await fetch("/api/users", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      // const filterUsers = userList.filter(user => user.address != address)
-      const findUser = userList.find((user) => user.address == address);
-      setUsers(userList);
-      setCurrentUser(findUser);
-    });
-  }, [address]);
+      const responseJson = await response.json();
+      setUsers(responseJson);
+    };
+    getUsersData();
+
+    setCurrentUser(user);
+  }, [address, user]);
 
   const handleShowDetail = (_userDetails) => {
     setUserDetails(_userDetails);

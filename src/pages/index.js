@@ -12,22 +12,19 @@ import {
   TotalUserProgressBar,
 } from "@/components-new";
 import { useAuth } from "@/hooks/useAuth";
-import { useAddress } from "@thirdweb-dev/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import ImageMap from "../../public/image-map.png";
 import { useActiveAccount, useWalletBalance } from "thirdweb/react";
-// import { useActiveAccount, useWalletBalance } from "@thirdweb-dev/react";
 
 const HomePage = () => {
-  // const address = useAddress();
   const account = useActiveAccount();
   const address = account?.address;
   const { user, signout } = useAuth();
+
   const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
-    // console.log("user :", user);
     if (!address) return;
 
     if (!user) {
@@ -36,11 +33,10 @@ const HomePage = () => {
     }
 
     setShowLogin(false);
-  }, [address, user]);
+  }, [address]);
 
   return (
     <Layout>
-      {/* <ConnectButton client={client} /> */}
       <TextTitleWithStatus text="Dashboard" />
       <DashboardCardList />
 
@@ -62,7 +58,7 @@ const HomePage = () => {
         </div>
         <div className="w-[80%] mx-auto flex flex-col gap-[40px] md:gap-[78px] mb-[40px]">
           <TotalUserProgressBar />
-          {/* <ResumeCardList /> */}
+          <ResumeCardList />
         </div>
       </div>
     </Layout>
