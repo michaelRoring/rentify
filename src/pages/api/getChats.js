@@ -1,8 +1,7 @@
-import pool from "../../lib/db";
+import { db } from "./firebase";
 import jwt from "jsonwebtoken";
 
 export default async function handler(req, res) {
-  console.log("API HIT!");
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Method not allowed" });
   }
@@ -18,16 +17,13 @@ export default async function handler(req, res) {
   const token = authHeader.split(" ")[1];
 
   try {
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const messagesRef = db.ref("chats/main_room/messages");
+    const snapshot = await messagesRef.once("value");
+    const messages = snapshot.val();
 
-    const client = await pool.connect();
-    const result = await client.query("SELECT * FROM users");
-    client.release();
-    res.status(200).json(result.rows);
+    res.status(200).json(messages);
   } catch (error) {
-    console.error("Error fetching users:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to fetch users", error: error.message });
+    console.error("Error fetching chat messages:", error);
+    res.status(500).json({ error: "Failed to fetch chat messages" });
   }
 }

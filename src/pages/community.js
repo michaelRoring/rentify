@@ -7,7 +7,6 @@ import {
   Button,
 } from "@/components-new";
 import { useAuth } from "@/hooks/useAuth";
-import { useAddress } from "@thirdweb-dev/react";
 import { useEffect, useState } from "react";
 import {
   useActiveAccount,
@@ -27,7 +26,7 @@ const CommunityPage = () => {
     try {
       if (wallet) {
         await disconnect(wallet);
-        await signout(); // Call the signout function from useAuth
+        await signout();
       }
     } catch (error) {
       console.error("Error disconnecting:", error);
@@ -35,7 +34,6 @@ const CommunityPage = () => {
   };
 
   useEffect(() => {
-    // if(!address || !user) return
     if (!user && address) {
       return;
     }
@@ -46,7 +44,7 @@ const CommunityPage = () => {
       <TextTitleWithStatus text="Community Chat" />
       <div className="md:pt-[54px] mb-[40px] md:mb-[78px]">
         <ChatContainer />
-        {wallet ? <Button onClick={handleDisconnect}>Sign Out</Button> : null}
+        {/* {wallet ? <Button onClick={handleDisconnect}>Sign Out</Button> : null} */}
       </div>
       {showLogin && (
         <EmailLoginModal

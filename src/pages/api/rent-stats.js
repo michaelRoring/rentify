@@ -1,5 +1,5 @@
 import admin from "firebase-admin";
-// import serviceAccountKey from '@/config/serviceAccountKey.json'
+// import serviceAccountKey from "@/config/serviceAccountKey.json";
 
 // Inisialisasi admin SDK dengan credential dari project Firebase Anda
 if (!admin.apps.length) {

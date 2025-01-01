@@ -1,4 +1,3 @@
-// pages/api/auth/login.js
 import pool from "../../../lib/db";
 import jwt from "jsonwebtoken";
 import { generateAvatarURL } from "@/utils/generateAvatarUrl";

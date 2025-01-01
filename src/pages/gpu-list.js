@@ -25,36 +25,37 @@ const GPUListPage = () => {
   const { contract, isLoading, error } = useContract(
     process.env.NEXT_PUBLIC_CONTRACT
   );
+
   console.log("isLoading :", isLoading);
   console.log("contract :", contract);
   console.log("error :", error);
   const [showLogin, setShowLogin] = useState(false);
 
-  // useEffect(() => {
-  //   if (!user && address) {
-  //     setShowLogin(true);
-  //   } else {
-  //     setShowLogin(false);
-  //   }
-  // }, [address, user]);
+  useEffect(() => {
+    if (!user && address) {
+      setShowLogin(true);
+    } else {
+      setShowLogin(false);
+    }
+  }, [address, user]);
 
   return (
     <Layout>
       <TextTitleWithStatus text="Select GPU" />
       <DashboardCardList />
-      {/* {address ? (
+      {address ? (
         <>
           {isLoading ? (
             <div>Loading...</div>
-          ) : ( */}
-      <MyGPUList contract={contract} address={address} />
-      {/* )}
+          ) : (
+            <MyGPUList contract={contract} address={address} />
+          )}
         </>
-      ) : ( */}
-      <div className="">
-        <CardGreetings />
-      </div>
-      {/* )} */}
+      ) : (
+        <div className="">
+          <CardGreetings />
+        </div>
+      )}
 
       {showLogin && (
         <EmailLoginModal

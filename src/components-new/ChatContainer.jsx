@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import InputText from "./InputText";
 import FormChat from "./FormChat";
 import Icon from "./Icon";
@@ -11,7 +11,6 @@ import User3 from "../../public/users/user-3.png";
 import User4 from "../../public/users/user-4.png";
 import User5 from "../../public/users/user-5.png";
 import { WalletConnecButton } from ".";
-import { useAddress } from "@thirdweb-dev/react";
 import firebase from "@/utils/firebaseConfig";
 import moment from "moment";
 import { addressShort } from "@/utils/addressShort";
@@ -56,7 +55,7 @@ const chatDataList = [
   },
 ];
 
-const ChatSection = ({ data, address, handleShowDetail }) => {
+const ChatSection = ({ roomIdSelected, handleSelectRoom, address }) => {
   return (
     <div
       className="
@@ -74,35 +73,65 @@ const ChatSection = ({ data, address, handleShowDetail }) => {
       <InputText placeholder="Search" withIcon="icon-search" />
       {address && (
         <ChatList
-          data={data}
-          handleShowDetail={handleShowDetail}
+          handleSelectRoom={handleSelectRoom}
           address={address}
+          roomIdSelected={roomIdSelected}
         />
       )}
     </div>
   );
 };
 
-const ChatList = ({ data, address, handleShowDetail }) => {
-  return (
-    <ul className="flex flex-col gap-[6px]">
-      {/* {data?.map((user, index) => (
-        <ChatItem
-          key={index}
-          currentUser={user.address == address}
-          handleShowDetail={handleShowDetail}
-          {...user}
-        />
-      ))} */}
-    </ul>
-  );
+const ChatList = ({ handleSelectRoom, address, roomIdSelected }) => {
+  const [roomId, setRoomId] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    const getRoomIds = async () => {
+      try {
+        const response = await fetch("/api/rooms");
+        const data = await response.json();
+        setRoomId(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching room IDs:", error);
+      }
+    };
+
+    getRoomIds();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  } else {
+    return (
+      <ul className="flex flex-col gap-[6px]">
+        {roomId?.map((room) => {
+          return (
+            <a>
+              {roomIdSelected === room ? (
+                <div className="bg-slate-600 w-fit px-2 rounded-md hover:bg-slate-700">
+                  <p onClick={() => handleSelectRoom(room)}>{room}</p>
+                </div>
+              ) : (
+                <div className="px-2 hover:bg-slate-400 w-fit rounded-md">
+                  <p onClick={() => handleSelectRoom(room)}>{room}</p>
+                </div>
+              )}
+            </a>
+          );
+        })}
+      </ul>
+    );
+  }
 };
 
 const ChatItem = (props) => {
   useEffect(() => {
     if (!props.address) return;
 
-    const messagesRef = firebase.database().ref("messages");
+    const messagesRef = db.database().ref("messages");
 
     messagesRef.on("value", (snapshot) => {
       const messagesData = snapshot.val();
@@ -271,7 +300,7 @@ const ChatMessage = ({ currentUser, sender, avatar, text, timestamp }) => {
           {moment(timestamp).fromNow()}
         </div>
       </div>
-      <div
+      {/* <div
         className={`
          w-[30px]
          h-[30px]
@@ -280,42 +309,53 @@ const ChatMessage = ({ currentUser, sender, avatar, text, timestamp }) => {
          overflow-hidden
          ${positionImage}
       `}
-      >
-        {avatar.length > 0 && (
-          <Image src={avatar} alt={sender} width={30} height={30} />
-        )}
-      </div>
+      ></div> */}
     </div>
   );
 };
 
-const ChatGroupDetails = (props) => {
-  console.log("props :", props);
+const ChatGroupDetails = ({ roomIdSelected, address, memberCount }) => {
   const [messages, setMessages] = useState([]);
+  const eventSourceRef = useRef(null);
 
   useEffect(() => {
-    if (!props.address) return;
+    if (!roomIdSelected) return;
 
-    const messagesRef = firebase.database().ref("messagesGroup");
-    messagesRef.on("value", (snapshot) => {
-      const messagesData = snapshot.val();
-      const messagesList = [];
-      for (let id in messagesData) {
-        messagesList.push(messagesData[id]);
+    eventSourceRef.current = new EventSource(`/api/chat/${roomIdSelected}`);
+
+    eventSourceRef.current.onmessage = (event) => {
+      try {
+        const newMessages = JSON.parse(event.data);
+        setMessages(newMessages);
+      } catch (error) {
+        console.error("JSON.parse error:", error);
       }
-      setMessages(messagesList);
-    });
-  }, [props.address]);
+    };
 
-  const handleSendMessage = (newMessage) => {
-    if (newMessage.trim() !== "") {
-      // Memastikan recipient sudah terdefinisi
-      firebase.database().ref("messagesGroup").push({
-        text: newMessage,
-        sender: props.address,
-        avatar: props.userAvatar,
-        timestamp: firebase.database.ServerValue.TIMESTAMP,
+    eventSourceRef.current.onerror = (error) => {
+      console.error("EventSource failed:", error);
+    };
+
+    return () => {
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+      }
+    };
+  }, [roomIdSelected]);
+
+  const handleSendMessage = async (newMessage) => {
+    if (newMessage.trim() === "") return;
+
+    try {
+      const response = await fetch(`/api/chat/${roomIdSelected}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: newMessage, sender: address }),
       });
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -332,16 +372,24 @@ const ChatGroupDetails = (props) => {
             />
           </div>
           <div>
-            <div className="font-semibold">Rentify Community Chat</div>
+            {roomIdSelected !== null ? (
+              <div className="font-bold">{roomIdSelected} chat</div>
+            ) : (
+              <div className="font-semibold">Rentify Community Chat</div>
+            )}
             <div className="text-[12px] text-white/50">
-              {props.memberCount} members
+              {memberCount} members
             </div>
           </div>
         </div>
         <div className="flex flex-col gap-[16px] h-[420px] overflow-y-auto p-[20px]">
-          {messages.map((message, index) => (
-            <ChatMessage key={index} currentUser={props.address} {...message} />
-          ))}
+          {messages ? (
+            messages.map((message, index) => (
+              <ChatMessage key={index} currentUser={address} {...message} />
+            ))
+          ) : (
+            <div className="bg-slate-100 animate-pulse"></div>
+          )}
         </div>
         <div
           className="
@@ -409,36 +457,65 @@ const UserDetails = ({ data, ...props }) => {
 const ChatContainer = (props) => {
   const account = useActiveAccount();
   const address = account?.address;
-  const { user, signout } = useAuth();
+  const { user, loading } = useAuth();
   const [currentUser, setCurrentUser] = useState(null);
-  // const [recipient, setRecipient] = useState(null); // Menambahkan state untuk recipient
   const [users, setUsers] = useState([]);
   const [showDetails, setShowDetails] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
   const [token, setToken] = useState(null);
+  const [roomIdSelected, setRoomIdSelected] = useState(null);
 
   useEffect(() => {
-    setToken(localStorage.getItem("token"));
-    const userList = [];
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    }
+  }, []);
+
+  useEffect(() => {
     const getUsersData = async () => {
-      const response = await fetch("/api/users", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      if (!token) return;
 
-      const responseJson = await response.json();
-      setUsers(responseJson);
+      try {
+        const response = await fetch("/api/users", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch users");
+        }
+
+        const responseJson = await response.json();
+        setUsers(responseJson);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
     };
-    getUsersData();
 
-    setCurrentUser(user);
-  }, [address, user]);
+    getUsersData();
+  }, [token]);
+
+  useEffect(() => {
+    if (user && !loading) {
+      setCurrentUser(user);
+    }
+  }, [user, loading]);
 
   const handleShowDetail = (_userDetails) => {
     setUserDetails(_userDetails);
     setShowDetails(true);
   };
+
+  const handleSelectRoom = (roomId) => {
+    setRoomIdSelected(roomId);
+    console.log("roomId :", roomId);
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div
@@ -455,9 +532,9 @@ const ChatContainer = (props) => {
       <ChatSection
         data={users}
         address={address}
-        handleShowDetail={handleShowDetail}
+        roomIdSelected={roomIdSelected}
+        handleSelectRoom={handleSelectRoom}
       />
-
       {address && currentUser ? (
         <>
           {!showDetails ? (
@@ -465,6 +542,7 @@ const ChatContainer = (props) => {
               memberCount={users.length}
               address={address}
               userAvatar={currentUser.avatar}
+              roomIdSelected={roomIdSelected}
             />
           ) : (
             <UserDetails

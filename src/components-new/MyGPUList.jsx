@@ -34,7 +34,7 @@ const MyGPUList = ({ contract, address, myOrder, ...props }) => {
     getMarketPrice();
   }, [marketPrice]);
 
-  console.log("getAllGPUs :", getAllGPUs);
+  // console.log("getAllGPUs :", JSON.stringify(getAllGPUs));
   const formatGPUsData = getAllGPUs?.map((item, index) => ({
     id: index + 1,
     name: item.name,
@@ -47,22 +47,22 @@ const MyGPUList = ({ contract, address, myOrder, ...props }) => {
     rentPrice: [
       {
         period: "day",
-        amount: ethers.utils.formatEther(item.rentPrice.day.toString()),
+        // amount: ethers.utils.formatEther(item.rentPrice.day.toString()),
       },
       {
         period: "week",
-        amount: ethers.utils.formatEther(item.rentPrice.week.toString()),
+        // amount: ethers.utils.formatEther(item.rentPrice.week.toString()),
       },
       {
         period: "month",
-        amount: ethers.utils.formatEther(item.rentPrice.month.toString()),
+        // amount: ethers.utils.formatEther(item.rentPrice.month.toString()),
       },
     ],
     owner: item.owner,
     renter: item.renter,
     isBought: item.isBought,
   }));
-  console.log("formatGPUsData :", formatGPUsData);
+  console.log("formatGPUsData :", JSON.stringify(formatGPUsData));
 
   return (
     <>

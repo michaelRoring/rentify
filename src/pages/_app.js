@@ -12,18 +12,13 @@ import {
   safeWallet,
   ChainId,
 } from "@thirdweb-dev/react";
-import { PolygonAmoyTestnet } from "@thirdweb-dev/chains";
+import { Ethereum, PolygonAmoyTestnet } from "@thirdweb-dev/chains";
+
 import { ProvideAuth } from "@/hooks/useAuth";
-// import {
-//   metamaskWallet,
-//   coinbaseWallet,
-//   walletConnect,
-// } from "thirdweb/wallets";
 import { createThirdwebClient } from "thirdweb";
-// import { ThirdwebProvider, ConnectButton } from "thirdweb/react";
-// import { ThirdwebProvider, ConnectButton } from "@thirdweb-dev/react";
 import { ThirdwebProvider } from "@thirdweb-dev/react";
 import { ThirdwebProvider as ThirdwebProviderV5 } from "thirdweb/react";
+import { ChatProvider } from "@/context/ChatContext";
 
 export const client = createThirdwebClient({
   clientId: process.env.NEXT_PUBLIC_CLIENT_ID,
@@ -44,14 +39,17 @@ export default function App({ Component, pageProps }) {
       // clientId={process.env.NEXT_PUBLIC_CLIENT_ID}
       client={client}
       activeChain={PolygonAmoyTestnet}
+      // activeChain={Ethereum}
       // desiredChainId={1}
     >
-      <ThirdwebProviderV5>
-        <ProvideAuth>
-          <Component {...pageProps} />
-          {/* <ConnectButton client={client} /> */}
-        </ProvideAuth>
-      </ThirdwebProviderV5>
+      <ChatProvider>
+        <ThirdwebProviderV5>
+          <ProvideAuth>
+            <Component {...pageProps} />
+            {/* <ConnectButton client={client} /> */}
+          </ProvideAuth>
+        </ThirdwebProviderV5>
+      </ChatProvider>
     </ThirdwebProvider>
   );
 }

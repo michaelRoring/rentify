@@ -21,6 +21,7 @@ export default function ChatbotLayout() {
           </div>
         )}
       </div>
+      //{" "}
     </ChatProvider>
   );
 }
